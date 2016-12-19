@@ -114,8 +114,9 @@ openBDに掲載する書誌情報・書影は版元ドットコムが収集し�
 
 <div style="text-align:left">
 <ul>
-<li>書誌情報1件あたり1ミリ秒以下での応答を保証</li>
+<li>書誌情報1件あたり1ミリ秒以下での応答</li>
 <li>大量データ(5000件まで)の一括取得に対応</li>
+<li>全件取得やデータ同期を推奨するAPI設計</li>
 <li>複数のCDNサービスに対応した書影情報の高速配信</li>
 <li>国内の複数データセンターにエッジサーバーを展開<br/>
 （さくらインターネット・AWS・GCPに順次展開予定）</li>
@@ -184,9 +185,9 @@ openBDに掲載する書誌情報・書影は版元ドットコムが収集し�
 							<dl class="alt">
 								<dt style="width:10em">株式会社カーリル</dt>
 								<dd>岐阜県中津川市坂下1645-15</dd>
-								<dt>版元ドットコム</dt>
+								<dt style="width:10em">版元ドットコム</dt>
 								<dd>東京都渋谷区神宮前2-33-18-303</dd>
-								<dt>Email</dt>
+								<dt style="width:10em">Email</dt>
 								<dd>info@openbd.jp</dd>
 							</dl>
 </section>
