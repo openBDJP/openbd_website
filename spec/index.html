@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8"/>
+<title>OpenBD 書誌APIデータ仕様</title>
+<style>
+table {
+	border:1px solid ;
+	border-collapse: collapse ;
+}
+td {
+
+	border:1px solid ;
+}
+</style>
+<h2>OpenBD 書誌APIデータ仕様</h2>
+<h3>JPRO-onix準拠項目 (onix)</h3>
+
+<table>
+<tr><td>RecordReference</td><td>ISBNコード</td><td></td></tr>
+<tr><td>ProductIdentifier/IDValue</td><td>ISBNコード</td><td></td></tr>
+<tr><td>DescriptiveDetail</td><td>商品情報</td><td></td></tr>
+<tr><td>　/ProductComposition</td><td>セット商品分売可否</td><td></td></tr>
+<tr><td>　/ProductFormDetail</td><td>判型</td><td>コード指定</td></tr>
+<tr><td>　/Measure</td><td>判型(実寸)</td><td></td></tr>
+<tr><td>　/ProductPart</td><td>付録情報</td><td></td></tr>
+<tr><td>　/Collection</td><td>シリーズ物等の情報</td><td></td></tr>
+<tr><td>　　/Collection/TitleDetail</td><td>シリーズ名/レーベル名</td><td></td></tr>
+<tr><td>　/TitleDetail/TitleText</td><td>タイトル</td><td></td></tr>
+<tr><td>　/TitleDetail/Subtitle</td><td>サブタイトル</td><td></td></tr>
+<tr><td>　/Contributor</td><td>著者情報</td><td></td></tr>
+<tr><td>　　/Contributor/ContributorRole</td><td>役割</td><td>コード指定</td></tr>
+<tr><td>　　/Contributor/PersonName</td><td>氏名</td><td></td></tr>
+<tr><td>　　/Contributor/BiographicalNote</td><td>著者略歴</td><td></td></tr>
+<tr><td>　/Language</td><td>言語</td><td></td></tr>
+<tr><td>　/Extent</td><td>ページ数</td><td></td></tr>
+<tr><td>　/Subject</td><td>Cコード/ジャンルコード/キーワード</td><td></td></tr>
+<tr><td>　/Audience</td><td>読者対象/成人指定</td><td></td></tr>
+<tr><td>　/TextContent</td><td>内容紹介/目次/出版社記入欄</td><td></td></tr>
+<tr><td>　/SupportingResource</td><td>書影</td><td>3枚まで</td></tr>
+<tr><td>　　/SupportingResource/ResourceLink</td><td>書影画像パス</td><td></td></tr>
+<tr><td>PublishingDetail</td><td>出版社情報</td><td></td></tr>
+<tr><td>　/Imprint</td><td>発行元出版社</td><td></td></tr>
+<tr><td>　/Publisher</td><td>発売元出版社</td><td></td></tr>
+<tr><td>　/PublishingDate</td><td>発売予定日等</td><td></td></tr>
+<tr><td>ProductSupply</td><td>出版状況等</td><td></td></tr>
+<tr><td>　/ReturnsConditions</td><td>販売条件</td><td></td></tr>
+<tr><td>　/Price</td><td>価格情報</td><td></td></tr>
+
+</table>
+詳細仕様は<a href="https://jpro.jpo.or.jp/handout/list">JPROサイト(https://jpro.jpo.or.jp/handout/list)</a>を参照のこと
+<h3>書評情報 (reviews)</h3>
+<table>
+<tr><td>appearance</td><td>掲載日</td><td></td></tr>
+<tr><td>reviewer</td><td>書評者</td><td></td></tr>
+<tr><td>source_id</td><td>掲載元ID</td><td></td></tr>
+<tr><td>kubun_id</td><td>掲載元区分ID</td><td></td></tr>
+<tr><td>source</td><td>掲載元</td><td></td></tr>
+<tr><td>choyukan</td><td>朝刊/夕刊</td><td></td></tr>
+<tr><td>han</td><td>版数</td><td></td></tr>
+<tr><td>link</td><td>リンク</td><td></td></tr>
+<tr><td>post_user</td><td>入力者</td><td></td></tr>
+</table>
+<h3>版元ドットコム会員社独自項目 (hanmoto)</h3>
+<table>
+<tr><td>genshomei</td><td>原書名</td><td></td></tr>
+<tr><td>han</td><td>版</td><td>新版、改訂などの版次(エディション)</td></tr>
+<tr><td>datejuuhanyotei</td><td>重版予定日</td><td></td></tr>
+<tr><td>datezeppan</td><td>絶版日</td><td></td></tr>
+<tr><td>toji</td><td>製本</td><td>上製="上製",並製="並製"</td></tr>
+<tr><td>zaiko</td><td>在庫</td><td>在庫あり=11／在庫僅少=21／重版中=22／品切れ・重版未定=33／絶版=34</td></tr>
+<tr><td>maegakinado</td><td>まえがきなど</td><td></td></tr>
+<tr><td>hanmotokarahitokoto</td><td>版元からひとこと</td><td></td></tr>
+<tr><td>kaisetsu105w</td><td>内容紹介TRC(105字)</td><td>TRC(図書館流通センター)のストックブックなどの選択用</td></tr>
+<tr><td>kanrensho</td><td>関連書</td><td></td></tr>
+<tr><td>kanrenLink</td><td>関連リンク</td><td>htmlで記入</td></tr>
+<tr><td>tsuiki</td><td>サイト追記</td><td>htmlで記入</td></tr>
+<tr><td>genrecodetrc</td><td>ジャンルコード(TRC)</td><td></td></tr>
+<tr><td>genrecodetrcjidou</td><td>ジャンルコード(TRC児童書)</td><td></td></tr>
+<tr><td>rubynoumu</td><td>ルビの有無</td><td></td></tr>
+<tr><td>ndccode</td><td>NDCコード</td><td></td></tr>
+<tr><td>kankoukeitai</td><td>刊行形態</td><td></td></tr>
+<tr><td>sonotatokkijikou</td><td>その他特記事項</td><td></td></tr>
+<tr><td>jushoujouhou</td><td>受賞情報</td><td></td></tr>
+<tr><td>furoku</td><td>付録</td><td>なし="",切り離し式=1,別冊=2</td></tr>
+<tr><td>furokusonota</td><td>付録その他</td><td></td></tr>
+<tr><td>dokushakakikomi</td><td>読者書き込み</td><td></td></tr>
+<tr><td>dokushakakikomipagesuu</td><td>読者書き込みページ数</td><td></td></tr>
+<tr><td>fuzokushiryounokangaikashidashi</td><td>付属資料館外貸出</td><td>可=1,不可=2,館内のみ=3</td></tr>
+<tr><td>obinaiyou</td><td>帯内容</td><td></td></tr>
+<tr><td>ruishokyougousho</td><td>類書・競合書</td><td></td></tr>
+<tr><td>bessoushiryou</td><td>別送資料</td><td></td></tr>
+<tr><td>zasshicode</td><td>雑誌コード</td><td></td></tr>
+<tr><td>bikoujpo</td><td>備考(JPO)</td><td></td></tr>
+<tr><td>bikoutrc</td><td>備考(TRC)</td><td></td></tr>
+<tr><td>kanrenshoisbn</td><td>関連書ISBN</td><td></td></tr>
+<tr><td>datemodified</td><td>情報更新日時</td><td></td></tr>
+<tr><td>datecreated</td><td>情報作成日時</td><td></td></tr>
+<tr><td>lanove</td><td>ライトノベルフラグ</td><td></td></tr>
+<tr><td>hasshohyo</td><td>書評データありフラグ</td><td></td></tr>
+<tr><td>hastameshiyomi</td><td>ためしよみありフラグ</td><td></td></tr>
+<tr><td>author</td><td>独自著者情報</td><td>(複数レコード可)</td></tr>
+<tr><td>author/listseq</td><td>リスト順(onixデータに対応)</td><td></td></tr>
+<tr><td>author/dokujikubun</td><td>独自著者区分</td><td></td></tr>
+<tr><td>jyuhan</td><td>重版情報</td><td>(複数レコード可)</td></tr>
+<tr><td>jyuhan/date</td><td>重版日</td><td></td></tr>
+<tr><td>jyuhan/suri</td><td>刷り数</td><td>数値</td></tr>
+<tr><td>jyuhan/comment</td><td>重版コメント</td><td></td></tr>
+<tr><td>jyuhan/ctime</td><td>レコード作成日時</td><td></td></tr>
+</table>
