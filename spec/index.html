@@ -1,22 +1,92 @@
 <!DOCTYPE html>
-<html>
-<meta charset="UTF-8"/>
-<title>OpenBD 書誌APIデータ仕様</title>
+<!-- saved from url=(0068)http://www.hanmoto.com/dev/obd.html#f=epubcfi(/2!/6[h5o-1]/20/2/5:0) -->
+<html><script>(function main() {
+    // Create enabled event
+    function fireEnabledEvent() {
+        // If gli exists, then we are already present and shouldn't do anything
+        if (!window.gli) {
+            setTimeout(function () {
+                var enabledEvent = document.createEvent("Event");
+                enabledEvent.initEvent("WebGLEnabledEvent", true, true);
+                document.dispatchEvent(enabledEvent);
+            }, 0);
+        } else {
+            //console.log("WebGL Inspector already embedded on the page - disabling extension");
+        }
+    };
+
+    // Grab the path root from the extension
+    document.addEventListener("WebGLInspectorReadyEvent", function (e) {
+        var pathElement = document.getElementById("__webglpathroot");
+        if (window["gliloader"]) {
+            gliloader.pathRoot = pathElement.innerText;
+        } else {
+            // TODO: more?
+            window.gliCssUrl = pathElement.innerText + "gli.all.css";
+        }
+    }, false);
+
+    // Rewrite getContext to snoop for webgl
+    var originalGetContext = HTMLCanvasElement.prototype.getContext;
+    if (!HTMLCanvasElement.prototype.getContextRaw) {
+        HTMLCanvasElement.prototype.getContextRaw = originalGetContext;
+    }
+    HTMLCanvasElement.prototype.getContext = function () {
+        var ignoreCanvas = this.internalInspectorSurface;
+        if (ignoreCanvas) {
+            return originalGetContext.apply(this, arguments);
+        }
+
+        var result = originalGetContext.apply(this, arguments);
+        if (result == null) {
+            return null;
+        }
+
+        var contextNames = ["moz-webgl", "webkit-3d", "experimental-webgl", "webgl", "3d"];
+        var requestingWebGL = contextNames.indexOf(arguments[0]) != -1;
+        if (requestingWebGL) {
+            // Page is requesting a WebGL context!
+            fireEnabledEvent(this);
+
+            // If we are injected, inspect this context
+            if (window.gli) {
+                if (gli.host.inspectContext) {
+                    // TODO: pull options from extension
+                    result = gli.host.inspectContext(this, result);
+                    // NOTE: execute in a timeout so that if the dom is not yet
+                    // loaded this won't error out.
+                    window.setTimeout(function() {
+                        var hostUI = new gli.host.HostUI(result);
+                        result.hostUI = hostUI; // just so we can access it later for debugging
+                    }, 0);
+                }
+            }
+        }
+
+        return result;
+    };
+})();</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>OpenBD 書誌APIデータ仕様 (v1)</title>
 <style>
+body {
+	font-size:14px;
+}
 table {
+	width:80% ;
 	border:1px solid ;
 	border-collapse: collapse ;
 }
 td {
-
 	border:1px solid ;
 }
 </style>
-<h2>OpenBD 書誌APIデータ仕様</h2>
+</head><body><h2>OpenBD 書誌APIデータ仕様 (v1)</h2>
+<p>update 2017/01/24</p>
+<p>V1の書誌データは、JPRO-onix準拠の基本項目+版元ドットコム独自データの構造になっている。</p>
+<p>版元ドットコム独自データは、現在のところ書評情報と版元ドットコム会員社による拡張書誌情報が含まれる。</p>
 <h3>JPRO-onix準拠項目 (onix)</h3>
-
 <table>
-<tr><td>RecordReference</td><td>ISBNコード</td><td></td></tr>
+<tbody><tr><td>RecordReference</td><td>ISBNコード</td><td></td></tr>
 <tr><td>ProductIdentifier/IDValue</td><td>ISBNコード</td><td></td></tr>
 <tr><td>DescriptiveDetail</td><td>商品情報</td><td></td></tr>
 <tr><td>　/ProductComposition</td><td>セット商品分売可否</td><td></td></tr>
@@ -35,6 +105,7 @@ td {
 <tr><td>　/Extent</td><td>ページ数</td><td></td></tr>
 <tr><td>　/Subject</td><td>Cコード/ジャンルコード/キーワード</td><td></td></tr>
 <tr><td>　/Audience</td><td>読者対象/成人指定</td><td></td></tr>
+<tr><td>CollateralDetail</td><td>商品付帯項目</td><td></td></tr>
 <tr><td>　/TextContent</td><td>内容紹介/目次/出版社記入欄</td><td></td></tr>
 <tr><td>　/SupportingResource</td><td>書影</td><td>3枚まで</td></tr>
 <tr><td>　　/SupportingResource/ResourceLink</td><td>書影画像パス</td><td></td></tr>
@@ -45,24 +116,29 @@ td {
 <tr><td>ProductSupply</td><td>出版状況等</td><td></td></tr>
 <tr><td>　/ReturnsConditions</td><td>販売条件</td><td></td></tr>
 <tr><td>　/Price</td><td>価格情報</td><td></td></tr>
-
-</table>
-詳細仕様は<a href="https://jpro.jpo.or.jp/handout/list">JPROサイト(https://jpro.jpo.or.jp/handout/list)</a>を参照のこと
-<h3>書評情報 (reviews)</h3>
+</tbody></table>
+詳細仕様は<a href="https://jpro.jpo.or.jp/handout/list">JPROサイト(https://jpro.jpo.or.jp/handout/list)</a>「データ仕様第3版」を参照のこと
+<h3></h3><h3>版元ドットコム独自項目 (hanmoto)</h3>
 <table>
-<tr><td>appearance</td><td>掲載日</td><td></td></tr>
-<tr><td>reviewer</td><td>書評者</td><td></td></tr>
-<tr><td>source_id</td><td>掲載元ID</td><td></td></tr>
-<tr><td>kubun_id</td><td>掲載元区分ID</td><td></td></tr>
-<tr><td>source</td><td>掲載元</td><td></td></tr>
-<tr><td>choyukan</td><td>朝刊/夕刊</td><td></td></tr>
-<tr><td>han</td><td>版数</td><td></td></tr>
-<tr><td>link</td><td>リンク</td><td></td></tr>
-<tr><td>post_user</td><td>入力者</td><td></td></tr>
-</table>
+<tbody><tr><td>datemodified</td><td>情報更新日時</td><td></td></tr>
+<tr><td>datecreated</td><td>情報作成日時</td><td></td></tr>
+<tr><td>lanove</td><td>ライトノベルフラグ</td><td></td></tr>
+<tr><td>hasshohyo</td><td>書評データありフラグ</td><td></td></tr>
+<tr><td>hastameshiyomi</td><td>ためしよみありフラグ</td><td></td></tr>
+<tr><td>reviews</td><td>書評情報</td><td>(複数レコード可)</td></tr>
+<tr><td>　/appearance</td><td>掲載日</td><td></td></tr>
+<tr><td>　/reviewer</td><td>書評者</td><td></td></tr>
+<tr><td>　/source_id</td><td>掲載元ID</td><td>別テーブル</td></tr>
+<tr><td>　/kubun_id</td><td>掲載元区分ID</td><td>別テーブル</td></tr>
+<tr><td>　/source</td><td>掲載元</td><td></td></tr>
+<tr><td>　/choyukan</td><td>朝刊/夕刊</td><td></td></tr>
+<tr><td>　/han</td><td>版数</td><td></td></tr>
+<tr><td>　/link</td><td>リンク</td><td></td></tr>
+<tr><td>　/post_user</td><td>入力者</td><td></td></tr>
+</tbody></table>
 <h3>版元ドットコム会員社独自項目 (hanmoto)</h3>
 <table>
-<tr><td>genshomei</td><td>原書名</td><td></td></tr>
+<tbody><tr><td>genshomei</td><td>原書名</td><td></td></tr>
 <tr><td>han</td><td>版</td><td>新版、改訂などの版次(エディション)</td></tr>
 <tr><td>datejuuhanyotei</td><td>重版予定日</td><td></td></tr>
 <tr><td>datezeppan</td><td>絶版日</td><td></td></tr>
@@ -93,11 +169,6 @@ td {
 <tr><td>bikoujpo</td><td>備考(JPO)</td><td></td></tr>
 <tr><td>bikoutrc</td><td>備考(TRC)</td><td></td></tr>
 <tr><td>kanrenshoisbn</td><td>関連書ISBN</td><td></td></tr>
-<tr><td>datemodified</td><td>情報更新日時</td><td></td></tr>
-<tr><td>datecreated</td><td>情報作成日時</td><td></td></tr>
-<tr><td>lanove</td><td>ライトノベルフラグ</td><td></td></tr>
-<tr><td>hasshohyo</td><td>書評データありフラグ</td><td></td></tr>
-<tr><td>hastameshiyomi</td><td>ためしよみありフラグ</td><td></td></tr>
 <tr><td>author</td><td>独自著者情報</td><td>(複数レコード可)</td></tr>
 <tr><td>author/listseq</td><td>リスト順(onixデータに対応)</td><td></td></tr>
 <tr><td>author/dokujikubun</td><td>独自著者区分</td><td></td></tr>
@@ -106,4 +177,5 @@ td {
 <tr><td>jyuhan/suri</td><td>刷り数</td><td>数値</td></tr>
 <tr><td>jyuhan/comment</td><td>重版コメント</td><td></td></tr>
 <tr><td>jyuhan/ctime</td><td>レコード作成日時</td><td></td></tr>
-</table>
+</tbody></table>
+</body></html>
