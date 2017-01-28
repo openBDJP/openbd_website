@@ -15,7 +15,7 @@ td {
 }
 </style>
 </head><body><h2>OpenBD 書誌APIデータ仕様 (v1)</h2>
-<p>update 2017/01/24</p>
+<p>update 2017/01/28</p>
 <p>V1の書誌データは、JPRO-onix準拠の基本項目+版元ドットコム独自データの構造になっている。</p>
 <p>版元ドットコム独自データは、現在のところ書評情報と版元ドットコム会員社による拡張書誌情報が含まれる。</p>
 <h3>JPRO-onix準拠項目 (onix)</h3>
@@ -29,20 +29,20 @@ td {
 <tr><td>　/ProductPart</td><td>付録情報</td><td></td></tr>
 <tr><td>　/Collection</td><td>シリーズ物等の情報</td><td></td></tr>
 <tr><td>　　/Collection/TitleDetail</td><td>シリーズ名/レーベル名</td><td></td></tr>
-<tr><td>　/TitleDetail/TitleText</td><td>タイトル</td><td></td></tr>
+<tr><td>　/TitleDetail/TitleText</td><td>書名</td><td></td></tr>
 <tr><td>　/TitleDetail/Subtitle</td><td>サブタイトル</td><td></td></tr>
 <tr><td>　/Contributor</td><td>著者情報</td><td></td></tr>
-<tr><td>　　/Contributor/ContributorRole</td><td>役割</td><td>コード指定</td></tr>
-<tr><td>　　/Contributor/PersonName</td><td>氏名</td><td></td></tr>
+<tr><td>　　/Contributor/ContributorRole</td><td>著者区分</td><td>コード指定</td></tr>
+<tr><td>　　/Contributor/PersonName</td><td>著者名</td><td></td></tr>
 <tr><td>　　/Contributor/BiographicalNote</td><td>著者略歴</td><td></td></tr>
 <tr><td>　/Language</td><td>言語</td><td></td></tr>
 <tr><td>　/Extent</td><td>ページ数</td><td></td></tr>
 <tr><td>　/Subject</td><td>Cコード/ジャンルコード/キーワード</td><td></td></tr>
 <tr><td>　/Audience</td><td>読者対象/成人指定</td><td></td></tr>
 <tr><td>CollateralDetail</td><td>商品付帯項目</td><td></td></tr>
-<tr><td>　/TextContent</td><td>内容紹介/目次/出版社記入欄</td><td></td></tr>
-<tr><td>　/SupportingResource</td><td>書影</td><td>3枚まで</td></tr>
-<tr><td>　　/SupportingResource/ResourceLink</td><td>書影画像パス</td><td></td></tr>
+<tr><td>　/TextContent</td><td>内容紹介/目次</td><td></td></tr>
+<tr><td>　/SupportingResource</td><td>画像</td><td>3枚まで</td></tr>
+<tr><td>　　/SupportingResource/ResourceLink</td><td>画像パス</td><td></td></tr>
 <tr><td>PublishingDetail</td><td>出版社情報</td><td></td></tr>
 <tr><td>　/Imprint</td><td>発行元出版社</td><td></td></tr>
 <tr><td>　/Publisher</td><td>発売元出版社</td><td></td></tr>
