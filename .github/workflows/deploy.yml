@@ -1,0 +1,18 @@
+name: Deploy
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+          path: 'src/'
+    - name: deploy
+      run: |
+          curl -L https://github.com/bep/s3deploy/releases/download/v2.3.5/s3deploy_2.3.5_Linux-64bit.tar.gz > s3deploy.tar.gz
+          tar xvzf s3deploy.tar.gz
+          mv src/.github/.s3deploy.yml ./
+          rm src/.gitignore
+          ./s3deploy -source ./src/ -key ${{ secrets.AWS_ACCESS_KEY_ID }} -secret ${{ secrets.AWS_SECRET_ACCESS_KEY }} -region ${{ secrets.S3_BUCKET_REGION }} -bucket ${{ secrets.S3_BUCKET }} -workers 2 -public-access -distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
