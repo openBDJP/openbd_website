@@ -17,7 +17,7 @@ https://openbd.jp/
 - CloudFrontのオリジングループでフェイルオーバーを設定（大阪／サンパウロ）
 
 | リージョンID | 場所 | デプロイ方法 |
-|-|-|-|-|
+|-|-|-|
 | [openbd-hosting-ap-northeast-3](https://s3.console.aws.amazon.com/s3/buckets/openbd-hosting-ap-northeast-3?region=ap-northeast-3&tab=objects) | 大阪 | GitHub Actions |
 | [openbd-hosting-sa-east-1](https://s3.console.aws.amazon.com/s3/buckets/openbd-hosting-sa-east-1?region=sa-east-1&tab=objects) | サンパウロ | レプリケーション |
 
