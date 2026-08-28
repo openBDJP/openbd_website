@@ -1,17 +1,72 @@
 name: Deploy
+
 on:
   push:
-    branches: [ master ]
+    branches: [master]
+
+# 既定の広い権限を使わない。ジョブに必要な分だけ与える。
+permissions: {}
+
+# **2026-08-28 に静的アクセスキーから OIDC へ移行した。**
+#
+# 移行前は IAM ユーザー openbd-hosting-deploy のアクセスキーを
+# secrets.AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY で渡していた。
+# キーは 2021-04-06 に作られてから一度もローテーションされていなかった。
+#
+# 引き受けるロールは CALIL 側の terraform で管理している
+# （CALIL/openbd の terraform-aws/website-deploy.tf）。信頼条件が
+# repo:openBDJP/openbd_website:ref:refs/heads/master なので、master への push
+# 以外からは引き受けられない。
+#
+# ⚠️ workflow_dispatch を足すときは信頼条件も変える必要がある。
+#    ref で絞っているため、手動実行だと sub が一致せず引き受けに失敗する。
+
 jobs:
-  build:
+  deploy:
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
           path: 'src/'
-    - name: deploy
-      run: |
-          curl -L https://github.com/bep/s3deploy/releases/download/v2.3.5/s3deploy_2.3.5_Linux-64bit.tar.gz > s3deploy.tar.gz
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          role-to-assume: arn:aws:iam::097228430949:role/GitHub_openBDJP_openbd_website
+          aws-region: ap-northeast-3
+
+      - name: deploy
+        run: |
+          curl -L https://github.com/bep/s3deploy/releases/download/v2.16.0/s3deploy_2.16.0_linux-amd64.tar.gz > s3deploy.tar.gz
           tar xvzf s3deploy.tar.gz
           mv src/.github/.s3deploy.yml ./
-          ./s3deploy -source ./src/ -key ${{ secrets.AWS_ACCESS_KEY_ID }} -secret ${{ secrets.AWS_SECRET_ACCESS_KEY }} -region ${{ secrets.S3_BUCKET_REGION }} -bucket ${{ secrets.S3_BUCKET }} -workers 2 -public-access -distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          # **-public-access を外した。** 公開はバケットポリシーが担っていて ACL に
+          # 依存していない。パブリックアクセスを締める段で ObjectOwnership を
+          # BucketOwnerEnforced にすると ACL 自体が無効になるので、その前に外す
+          # 必要がある。v2.16.0 では deprecated 警告も出るようになった。
+          #
+          # 書き込み先は大阪だけ。サンパウロ（フェイルオーバー先）へは
+          # クロスリージョンレプリケーションで複製される。
+          ./s3deploy -source ./src/ -region ap-northeast-3 -bucket openbd-hosting-ap-northeast-3 -workers 2
+
+      - name: Invalidate CloudFront
+        run: |
+          # **"/*" がシェルの glob として展開されるのを止める。** 展開されると
+          # ランナーのルート直下（/bin /etc /usr …）が渡り、無効化が効かなくなる。
+          set -f
+          # **s3deploy の -distribution-id は使わない。**
+          #
+          # あちらは変更されたファイルのパスを無効化するが、index.html を
+          # ディレクトリパス（/spec/）に丸める。openbd.jp は viewer-request の
+          # CloudFront Function が /spec/ を /spec/index.html へ書き換えるので、
+          # キャッシュキーと無効化パスが食い違って反映されない。
+          #
+          # 配信物が 70 ファイルと小さいので、ディストリビューション単位でまとめて消す。
+          aws cloudfront create-invalidation \
+            --distribution-id E2CMCI17OO6W7F \
+            --paths "/*" \
+            --query 'Invalidation.Id' --output text
